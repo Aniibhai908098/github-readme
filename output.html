@@ -3,273 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Profile Information</title>
+    <title>GitHub README Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SF Pro Display Font (Apple's System Font) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: radial-gradient(circle, rgba(255, 200, 200, 0.2) 10%, white 50%);
+        * {
+            font-family: "SF Pro Display", -apple-system, "Inter", sans-serif;
         }
-        .profile-card {
+        .markdown-preview {
+            font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            padding: 20px;
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .social-icon {
-            transition: transform 0.3s ease, filter 0.3s ease;
-        }
-        .social-icon:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.2);
-        }
-        .btn {
-            transition: all 0.3s ease;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 1rem;
             border-radius: 8px;
-            background-color: #4CAF50;
-            color: white;
-            display: none;
-            animation: slideIn 0.3s ease-out;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+        .copy-button {
+            transition: all 0.3s ease;
+            background: var(--apple-pink, #FB2D5E);
+        }
+        .copy-button:hover {
+            transform: translateY(-2px);
+            background: #e0204d;
+            box-shadow: 0 10px 20px rgba(251, 45, 94, 0.2);
+        }
+        body {
+            background: radial-gradient(circle, rgba(255, 200, 200, 0.2) 10%, white 50%);
         }
     </style>
 </head>
-<body class="min-h-screen py-8 px-4">
-    <div class="max-w-4xl mx-auto">
-        <!-- Header -->
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-800 mb-2">GitHub Profile Information</h1>
-            <div class="text-gray-600">
-                <div id="timestamp"></div>
-                <div id="userLogin" class="mt-1"></div>
-            </div>
-        </div>
-
-        <!-- Main Content -->
-        <div class="profile-card p-6 mb-6">
-            <!-- Basic Information -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div>
-                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Basic Information</h2>
-                    <div class="space-y-3">
-                        <div class="flex flex-col">
-                            <span class="text-gray-600 text-sm">Name</span>
-                            <span id="displayName" class="font-medium text-gray-800"></span>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-gray-600 text-sm">Father's Name</span>
-                            <span id="displayFatherName" class="font-medium text-gray-800"></span>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-gray-600 text-sm">Qualification</span>
-                            <span id="displayQualification" class="font-medium text-gray-800"></span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Social Links -->
-                <div>
-                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Social Links</h2>
-                    <div class="grid grid-cols-3 gap-4">
-                        <!-- GitHub -->
-                        <a href="#" id="githubLink" class="social-icon flex items-center justify-center p-3 rounded-lg bg-gray-100 hover:bg-gray-200">
-                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/github.svg" 
-                                 class="w-6 h-6" alt="github"
-                                 style="filter: invert(0%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(0%) contrast(100%)"/>
-                        </a>
-                        <!-- LinkedIn -->
-                        <a href="#" id="linkedinLink" class="social-icon flex items-center justify-center p-3 rounded-lg bg-gray-100 hover:bg-gray-200">
-                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/linkedin.svg" 
-                                 class="w-6 h-6" alt="linkedin"
-                                 style="filter: invert(31%) sepia(98%) saturate(1954%) hue-rotate(183deg) brightness(96%) contrast(87%)"/>
-                        </a>
-                        <!-- Twitter -->
-                        <a href="#" id="twitterLink" class="social-icon flex items-center justify-center p-3 rounded-lg bg-gray-100 hover:bg-gray-200">
-                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/twitter.svg" 
-                                 class="w-6 h-6" alt="twitter"
-                                 style="filter: invert(48%) sepia(96%) saturate(4619%) hue-rotate(179deg) brightness(100%) contrast(91%)"/>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="flex flex-wrap gap-4 justify-center">
-                <button onclick="copyToClipboard()" class="btn px-6 py-2 bg-blue-600 text-white rounded-lg flex items-center gap-2">
+<body class="p-6">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">GitHub README Generator</h1>
+            <div class="flex gap-4">
+                <button onclick="copyToClipboard()" class="copy-button px-6 py-2 text-white rounded-lg flex items-center gap-2">
                     <i class="fas fa-copy"></i>
-                    Copy Information
+                    Copy README
                 </button>
-                <button onclick="downloadTxtFile()" class="btn px-6 py-2 bg-green-600 text-white rounded-lg flex items-center gap-2">
-                    <i class="fas fa-download"></i>
-                    Download as TXT
-                </button>
-                <button onclick="downloadJSON()" class="btn px-6 py-2 bg-orange-600 text-white rounded-lg flex items-center gap-2">
-                    <i class="fas fa-code"></i>
-                    Download as JSON
-                </button>
-                <button onclick="window.print()" class="btn px-6 py-2 bg-purple-600 text-white rounded-lg flex items-center gap-2">
-                    <i class="fas fa-print"></i>
-                    Print
-                </button>
-                <a href="form.html" class="btn px-6 py-2 bg-gray-600 text-white rounded-lg flex items-center gap-2">
+                <a href="index.html" class="bg-gray-600 text-white px-6 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-700 transition-colors">
                     <i class="fas fa-arrow-left"></i>
                     Back to Form
                 </a>
             </div>
         </div>
-
-        <!-- Repository Info -->
-        <div class="profile-card p-6">
-            <h2 class="text-xl font-semibold mb-4 text-gray-800">Repository Information</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex flex-col">
-                    <span class="text-gray-600 text-sm">Repository</span>
-                    <span class="font-medium text-gray-800">Aniibhai908098/github-readme</span>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-gray-600 text-sm">Repository ID</span>
-                    <span class="font-medium text-gray-800">928673910</span>
-                </div>
-            </div>
+        
+        <div class="markdown-preview" id="preview">
+            <pre id="markdownContent" class="whitespace-pre-wrap text-sm"></pre>
         </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="toast"></div>
-
     <script>
-        // Update timestamp with current UTC time
-        function updateTimestamp() {
-            const now = new Date();
-            const formatted = now.toISOString().replace('T', ' ').substr(0, 19);
-            document.getElementById('timestamp').textContent = `Current Date and Time (UTC): ${formatted}`;
-        }
-        updateTimestamp();
-        setInterval(updateTimestamp, 1000);
+        // Current timestamp and user details
+        const CURRENT_TIME = "2025-02-07 03:26:49";
+        const CURRENT_USER = "Anytu9878978798";
 
-        // Set user login
-        document.getElementById('userLogin').textContent = `Current User's Login: Anytu9878978798`;
-
-        // Get URL parameters
-        function getUrlParameter(name) {
-            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-            const results = regex.exec(location.search);
-            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        function getAllUrlParameters() {
+            const params = new URLSearchParams(window.location.search);
+            const result = {};
+            for(const [key, value] of params) {
+                result[key] = value;
+            }
+            return result;
         }
 
-        // Display form data
-        const name = getUrlParameter('name');
-        const fatherName = getUrlParameter('fatherName');
-        const qualification = getUrlParameter('qualification');
+        function generateSocialLink(platform, username, icon) {
+            if (!username) return '';
+            const baseUrl = {
+                github: 'https://github.com/',
+                twitter: 'https://twitter.com/',
+                dev: 'https://dev.to/',
+                codepen: 'https://codepen.io/',
+                codesandbox: 'https://codesandbox.com/',
+                stackoverflow: 'https://stackoverflow.com/users/',
+                linkedin: 'https://linkedin.com/in/',
+                kaggle: 'https://kaggle.com/',
+                fb: 'https://facebook.com/',
+                instagram: 'https://instagram.com/',
+                dribbble: 'https://dribbble.com/',
+                behance: 'https://www.behance.net/',
+                hashnode: 'https://hashnode.com/@',
+                medium: 'https://medium.com/@',
+                youtube: 'https://youtube.com/c/',
+                codechef: 'https://www.codechef.com/users/',
+                hackerrank: 'https://www.hackerrank.com/',
+                codeforces: 'https://codeforces.com/profile/',
+                leetcode: 'https://leetcode.com/',
+                topcoder: 'https://www.topcoder.com/members/',
+                hackerearth: 'https://www.hackerearth.com/',
+                geeksforgeeks: 'https://auth.geeksforgeeks.org/user/',
+                discord: 'https://discord.gg/'
+            }[platform];
 
-        document.getElementById('displayName').textContent = name;
-        document.getElementById('displayFatherName').textContent = fatherName;
-        document.getElementById('displayQualification').textContent = qualification;
-
-        // Show toast message
-        function showToast(message, duration = 3000) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.style.display = 'block';
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, duration);
+            return `<a href="${baseUrl}${username}" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/${icon}.svg" alt="${username}" height="30" width="40" /></a>`;
         }
 
-        // Get formatted text for export
-        function getFormattedText() {
-            return `GitHub Profile Information
-------------------------
-Current Date and Time (UTC): ${document.getElementById('timestamp').textContent}
-Current User's Login: ${document.getElementById('userLogin').textContent}
+        function generateReadme() {
+            const params = getAllUrlParameters();
+            const github = params.github || 'username';
+            
+            let markdown = `<h1 align="center">Hi 👋, I'm ${params.name || 'Your Name'}</h1>
+<h3 align="center">${params.title || 'A passionate developer'} from ${params.location || 'Your Location'}</h3>
 
-Basic Information:
-- Name: ${name}
-- Father's Name: ${fatherName}
-- Qualification: ${qualification}
+<p align="left"> <img src="https://komarev.com/ghpvc/?username=${github}&label=Profile%20views&color=0e75b6&style=flat" alt="${github}" /> </p>
 
-Repository Information:
-- Repository: Aniibhai908098/github-readme
-- Repository ID: 928673910`;
+<p align="left"> <a href="https://github.com/ryo-ma/github-profile-trophy"><img src="https://github-profile-trophy.vercel.app/?username=${github}" alt="${github}" /></a> </p>
+
+${params.twitter ? `<p align="left"> <a href="https://twitter.com/${params.twitter}" target="blank"><img src="https://img.shields.io/twitter/follow/${params.twitter}?logo=twitter&style=for-the-badge" alt="${params.twitter}" /></a> </p>` : ''}
+
+${params.working ? `- 🔭 I'm currently working on [${params.workingTitle || 'Project'}](${params.working})` : ''}
+
+${params.learning ? `- 🌱 I'm currently learning **${params.learning}**` : ''}
+
+${params.collaborate ? `- 👯 I'm looking to collaborate on [${params.collaborateTitle || 'Project'}](${params.collaborate})` : ''}
+
+${params.help ? `- 🤝 I'm looking for help with [${params.helpTitle || 'Project'}](${params.help})` : ''}
+
+${params.portfolio ? `- 👨‍💻 All of my projects are available at [${params.portfolio}](${params.portfolio})` : ''}
+
+${params.blog ? `- 📝 I regularly write articles on [${params.blog}](${params.blog})` : ''}
+
+${params.askMe ? `- 💬 Ask me about **${params.askMe}**` : ''}
+
+${params.email ? `- 📫 How to reach me **${params.email}**` : ''}
+
+${params.resume ? `- 📄 Know about my experiences [${params.resumeTitle || 'Resume'}](${params.resume})` : ''}
+
+${params.funFact ? `- ⚡ Fun fact **${params.funFact}**` : ''}
+
+<h3 align="left">Connect with me:</h3>
+<p align="left">
+${generateSocialLink('github', params.github, 'github')}
+${generateSocialLink('twitter', params.twitter, 'twitter')}
+${generateSocialLink('dev', params.dev, 'devto')}
+${generateSocialLink('codepen', params.codepen, 'codepen')}
+${generateSocialLink('codesandbox', params.codesandbox, 'codesandbox')}
+${generateSocialLink('stackoverflow', params.stackoverflow, 'stack-overflow')}
+${generateSocialLink('linkedin', params.linkedin, 'linked-in-alt')}
+${generateSocialLink('kaggle', params.kaggle, 'kaggle')}
+${generateSocialLink('fb', params.fb, 'facebook')}
+${generateSocialLink('instagram', params.instagram, 'instagram')}
+${generateSocialLink('dribbble', params.dribbble, 'dribbble')}
+${generateSocialLink('behance', params.behance, 'behance')}
+${generateSocialLink('hashnode', params.hashnode, 'hashnode')}
+${generateSocialLink('medium', params.medium, 'medium')}
+${generateSocialLink('youtube', params.youtube, 'youtube')}
+${generateSocialLink('codechef', params.codechef, 'codechef')}
+${generateSocialLink('hackerrank', params.hackerrank, 'hackerrank')}
+${generateSocialLink('codeforces', params.codeforces, 'codeforces')}
+${generateSocialLink('leetcode', params.leetcode, 'leet-code')}
+${generateSocialLink('topcoder', params.topcoder, 'topcoder')}
+${generateSocialLink('hackerearth', params.hackerearth, 'hackerearth')}
+${generateSocialLink('geeksforgeeks', params.geeksforgeeks, 'geeks-for-geeks')}
+${generateSocialLink('discord', params.discord, 'discord')}
+</p>
+
+<h3 align="left">Languages and Tools:</h3>
+<p align="left">
+${(params.skills || '').split(',').map(skill => 
+    `<img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/${skill.trim().toLowerCase()}/${skill.trim().toLowerCase()}-original.svg" alt="${skill.trim()}" width="40" height="40"/>`
+).join(' ')}
+</p>
+
+<p><img align="left" src="https://github-readme-stats.vercel.app/api/top-langs?username=${github}&show_icons=true&locale=en&layout=compact" alt="${github}" /></p>
+
+<p>&nbsp;<img align="center" src="https://github-readme-stats.vercel.app/api?username=${github}&show_icons=true&locale=en" alt="${github}" /></p>
+
+<p><img align="center" src="https://github-readme-streak-stats.herokuapp.com/?user=${github}&" alt="${github}" /></p>`;
+
+            document.getElementById('markdownContent').textContent = markdown;
         }
 
-        // Get JSON data
-        function getJSONData() {
-            return {
-                timestamp: document.getElementById('timestamp').textContent,
-                userLogin: document.getElementById('userLogin').textContent,
-                basicInfo: {
-                    name: name,
-                    fatherName: fatherName,
-                    qualification: qualification
-                },
-                repository: {
-                    name: "Aniibhai908098/github-readme",
-                    id: 928673910
-                }
-            };
-        }
-
-        // Copy to clipboard
         function copyToClipboard() {
-            const text = getFormattedText();
-            navigator.clipboard.writeText(text)
-                .then(() => showToast('Information copied to clipboard!'))
-                .catch(err => {
-                    console.error('Failed to copy text: ', err);
-                    showToast('Failed to copy to clipboard');
-                });
+            const content = document.getElementById('markdownContent').textContent;
+            navigator.clipboard.writeText(content)
+                .then(() => alert('README copied to clipboard!'))
+                .catch(err => console.error('Failed to copy:', err));
         }
 
-        // Download as TXT
-        function downloadTxtFile() {
-            const text = getFormattedText();
-            const blob = new Blob([text], { type: 'text/plain' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `github_profile_${Date.now()}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
-            showToast('TXT file downloaded successfully!');
-        }
-
-        // Download as JSON
-        function downloadJSON() {
-            const data = getJSONData();
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `github_profile_${Date.now()}.json`;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
-            showToast('JSON file downloaded successfully!');
-        }
+        // Generate README on page load
+        generateReadme();
     </script>
 </body>
 </html>
